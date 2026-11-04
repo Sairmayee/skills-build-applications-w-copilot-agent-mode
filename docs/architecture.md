@@ -28,27 +28,23 @@ OctoFit Tracker is a three-tier application for a school fitness program. The st
 
 ## Implementation Decisions
 
-### Smallest Safe Implementation Order
+### Data tier
 
-1. **Data tier**
-	- Add the required schema fields and validation needed by the failing tests.
-	- Preserve existing seed data behavior and compatibility.
-	- Ensure validation prevents invalid records from being persisted.
-2. **Logic tier**
-	- Implement activity validation, creation, and listing.
-	- Implement team validation, creation, and listing.
-	- Implement leaderboard aggregation and ranking.
-	- Implement user lookup by email.
-	- Implement activity-pattern workout suggestions.
-	- Include a `reason` field explaining each workout recommendation.
-	- Return deliberate 4xx responses for invalid input and unknown users instead of 500-level errors.
-3. **Presentation tier**
-	- Replace each placeholder component with the shared API client plus loading, empty, error, and success states.
-4. **Validation order**
-	- Run data-tier tests after schema changes.
-	- Run API tests after service-layer implementation.
-	- Run frontend tests after UI implementation.
-	- Finish with backend and frontend build verification.
+- Add required schema fields and validation while preserving the passing seed behavior.
+
+### Logic tier
+
+- Activity validation, creation, and listing.
+- Team validation, creation, and listing.
+- Leaderboard aggregation and ranking.
+- User lookup.
+- Activity-pattern workout suggestions.
+- Reason generation.
+- Unknown-user errors and deliberate 4xx handling.
+
+### Presentation tier
+
+- Replace each placeholder component with the shared API client plus loading, empty, error, and success states.
 
 ## Test Plan
 
