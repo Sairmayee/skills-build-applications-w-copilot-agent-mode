@@ -26,50 +26,49 @@ OctoFit Tracker is a three-tier application for a school fitness program. The st
 | Leaderboard | `GET /api/leaderboard` | Return teams ordered by the sum of their activity points, highest first. Each entry has `teamName`, `totalPoints`, and a 1-based `rank`. |
 | Workout suggestions | `GET /api/workouts/suggestions/:userEmail` | Recommend workouts from recent activity patterns for the matching seeded user's email address. The first suggestion's `focus` matches that user's goal or recent activity, with a `reason` explaining why. An email with no matching user returns a deliberate 4xx (for example, `404`). |
 
-## Implementation decisions
+## Implementation Decisions
 
-### Data tier
+### Smallest Safe Implementation Order
 
-- Extend MongoDB schemas with the fields required by the failing tests.
-- Preserve existing seed data behavior and backward compatibility.
-- Add validation rules at the model level to enforce required fields.
+1. **Data tier**
+	- Add the required schema fields and validation needed by the failing tests.
+	- Preserve existing seed data behavior and compatibility.
+	- Ensure validation prevents invalid records from being persisted.
+2. **Logic tier**
+	- Implement activity validation, creation, and listing.
+	- Implement team validation, creation, and listing.
+	- Implement leaderboard aggregation and ranking.
+	- Implement user lookup by email.
+	- Implement activity-pattern workout suggestions.
+	- Include a `reason` field explaining each workout recommendation.
+	- Return deliberate 4xx responses for invalid input and unknown users instead of 500-level errors.
+3. **Presentation tier**
+	- Replace placeholder components with functional React components.
+	- Use the shared API client for all backend communication.
+	- Implement loading, empty, success, and error states.
+	- Keep frontend behavior aligned with the API contract.
+4. **Validation order**
+	- Run data-tier tests after schema changes.
+	- Run API tests after service-layer implementation.
+	- Run frontend tests after UI implementation.
+	- Finish with backend and frontend build verification.
 
-### Logic tier
-
-- Implement activity creation, validation, and retrieval services.
-- Implement team creation, validation, and retrieval services.
-- Implement leaderboard aggregation and ranking logic.
-- Implement user lookup and personalized workout recommendation generation.
-- Add explicit 4xx error responses for invalid requests and unknown users.
-
-### Presentation tier
-
-- Replace placeholder React components with API-integrated components.
-- Use the shared API client for all backend communication.
-- Support loading, empty, success, and error UI states.
-- Keep frontend behavior aligned with backend API contracts.
-
-### Configuration
-
-- Use only the approved service ports:
-- Backend: `8000`
-- Frontend: `5173`
-- MongoDB: `27017`
-
-## Test plan
+## Test Plan
 
 1. Verify MongoDB is running before executing integration tests.
-2. Run focused data-tier tests after schema and validation changes.
-3. Run backend API tests after implementing service-layer functionality.
-4. Run frontend tests after replacing placeholder components.
-5. Re-run backend and frontend test suites after each completed tier.
-6. Perform final verification using `npm test --prefix octofit-tracker/backend` and `npm test --prefix octofit-tracker/frontend`.
-7. Confirm both frontend and backend builds succeed before submission.
-
-Focused commands:
-
-- Data-tier command: `npm run test:data --prefix octofit-tracker/backend`
-- API command: `npm run test:api --prefix octofit-tracker/backend`
-- Frontend command: `npm test --prefix octofit-tracker/frontend`
-- Backend build command: `npm run build --prefix octofit-tracker/backend`
-- Frontend build command: `npm run build --prefix octofit-tracker/frontend`
+2. Establish a failing baseline:
+	- `npm test --prefix octofit-tracker/backend`
+	- `npm test --prefix octofit-tracker/frontend`
+3. Validate data-tier changes:
+	- `npm run test:data --prefix octofit-tracker/backend`
+4. Validate API-layer changes:
+	- `npm run test:api --prefix octofit-tracker/backend`
+5. Validate presentation-tier changes:
+	- `npm test --prefix octofit-tracker/frontend`
+6. Perform full regression testing:
+	- `npm test --prefix octofit-tracker/backend`
+	- `npm test --prefix octofit-tracker/frontend`
+7. Verify production readiness:
+	- `npm run build --prefix octofit-tracker/backend`
+	- `npm run build --prefix octofit-tracker/frontend`
+8. Confirm all tests pass and both applications build successfully before submission.
