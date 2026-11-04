@@ -28,6 +28,10 @@ OctoFit Tracker is a three-tier application for a school fitness program. The st
 
 ## Implementation Decisions
 
+### Presentation tier
+
+- Replace each placeholder component with the shared API client plus loading, empty, error, and success states.
+
 ### Smallest Safe Implementation Order
 
 1. **Data tier**
@@ -43,9 +47,11 @@ OctoFit Tracker is a three-tier application for a school fitness program. The st
 	- Include a `reason` field explaining each workout recommendation.
 	- Return deliberate 4xx responses for invalid input and unknown users instead of 500-level errors.
 3. **Presentation tier**
-	- Replace placeholder components with functional React components.
-	- Use the shared API client for all backend communication.
-	- Implement loading, empty, success, and error states.
+	- Replace each placeholder component with an implementation that uses the shared API client.
+	- Add loading states for data-fetching operations.
+	- Add empty states when no data is returned.
+	- Add error states for failed API requests.
+	- Add success states for completed operations.
 	- Keep frontend behavior aligned with the API contract.
 4. **Validation order**
 	- Run data-tier tests after schema changes.
