@@ -28,19 +28,45 @@ OctoFit Tracker is a three-tier application for a school fitness program. The st
 
 ## Implementation decisions
 
-Record your plan here before editing code.
+### Data tier
 
-- Presentation tier decision:
-- Logic tier decision:
-- Data tier decision:
-- Activity tracking approach:
-- Team management approach:
-- Leaderboard approach:
-- Workout suggestions approach:
+- Extend MongoDB schemas with the fields required by the failing tests.
+- Preserve existing seed data behavior and backward compatibility.
+- Add validation rules at the model level to enforce required fields.
+
+### Logic tier
+
+- Implement activity creation, validation, and retrieval services.
+- Implement team creation, validation, and retrieval services.
+- Implement leaderboard aggregation and ranking logic.
+- Implement user lookup and personalized workout recommendation generation.
+- Add explicit 4xx error responses for invalid requests and unknown users.
+
+### Presentation tier
+
+- Replace placeholder React components with API-integrated components.
+- Use the shared API client for all backend communication.
+- Support loading, empty, success, and error UI states.
+- Keep frontend behavior aligned with backend API contracts.
+
+### Configuration
+
+- Use only the approved service ports:
+- Backend: `8000`
+- Frontend: `5173`
+- MongoDB: `27017`
 
 ## Test plan
 
-Record the commands you run and what each failure means.
+1. Verify MongoDB is running before executing integration tests.
+2. Run focused data-tier tests after schema and validation changes.
+3. Run backend API tests after implementing service-layer functionality.
+4. Run frontend tests after replacing placeholder components.
+5. Re-run backend and frontend test suites after each completed tier.
+6. Perform final verification using `npm test --prefix octofit-tracker/backend` and `npm test --prefix octofit-tracker/frontend`.
+7. Confirm both frontend and backend builds succeed before submission.
+
+Focused commands:
 
 - Data-tier command: `npm run test:data --prefix octofit-tracker/backend`
 - API command: `npm run test:api --prefix octofit-tracker/backend`
